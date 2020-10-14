@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb = null;
     private Rigidbody[] rigBones = null;
     public bool isGrounded = true;
+    public ConfigurableJoint joint;
     private bool isjumping;
     private void Start()
     {
@@ -65,10 +66,16 @@ public class PlayerController : MonoBehaviour
         
 
         //getup
-        if (Input.GetKeyDown(KeyCode.U)){
+
+        if (joint.angularXDrive.positionSpring >= 50 && joint.angularYZDrive.positionSpring >=50){
+            Debug.Log("off");
             anim.enabled = true;
             TurnOffRagdoll();
         }
+        // if (Input.GetKeyDown(KeyCode.U)){
+        //     anim.enabled = true;
+        //     TurnOffRagdoll();
+        // }
 
         rb.velocity += Vector3.down * fallVelocity;
     }
@@ -76,13 +83,13 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter(Collision collision){
         isjumping = false;
     }
-    // private void OnCollisionExit(Collision collision){
-    //     if (isjumping == false){
-    //         anim.enabled = false;
-    //         TurnOnRagdoll();
-    //     }
+    private void OnCollisionExit(Collision collision){
+        if (isjumping == false){
+            anim.enabled = false;
+            TurnOnRagdoll();
+        }
         
-    // }
+    }
     private void TurnOffRagdoll()
     {
         foreach (Rigidbody r in rigBones){
